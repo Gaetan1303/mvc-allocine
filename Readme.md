@@ -66,3 +66,7 @@ class DiffusionEntity {
 >var_dump($date->format('H:i:s'));
 >// string(8) "18:16:16"
 >```
+
+
+
+docker-compose up -d --build

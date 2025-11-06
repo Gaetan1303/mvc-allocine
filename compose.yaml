@@ -1,11 +1,46 @@
 services:
   web:
-
+    build: ./web
+    container_name: allocine_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - bdd
+    networks:
+      - allocine_network
 
   bdd:
-
+    image: mysql:8.0
+    container_name: allocine_bdd
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: allocine
+      MYSQL_USER: allocine_user
+      MYSQL_PASSWORD: allocine_pass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - allocine_network
 
   pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: allocine_pma
+    environment:
+      PMA_HOST: bdd
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8081:80"
+    depends_on:
+      - bdd
+    networks:
+      - allocine_network
 
 volumes:
   db_data:
+
+networks:
+  allocine_network:
